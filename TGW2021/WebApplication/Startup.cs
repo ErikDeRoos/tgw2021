@@ -1,17 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WebApplication.Data;
+using WebApplication.Data.DataModels;
+using WebApplication.Services;
 
 namespace WebApplication
 {
@@ -34,6 +30,14 @@ namespace WebApplication
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // Transient services per domain, to enforce single action per request (better for EF stability)
+            services.AddTransient<ICustomerDataDomain>(s => s.GetRequiredService<ApplicationDbContext>());
+            services.AddTransient<IOrderDataDomain>(s => s.GetRequiredService<ApplicationDbContext>());
+            services.AddTransient<IProductDataDomain>(s => s.GetRequiredService<ApplicationDbContext>());
+
+            services.AddProcessors();
+
             services.AddControllersWithViews();
         }
 

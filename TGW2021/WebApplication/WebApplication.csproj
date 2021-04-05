@@ -13,4 +13,12 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\DataModels\Customer\" />
+    <Folder Include="Data\DataModels\Product\" />
+    <Folder Include="Data\DataModels\Order\" />
+    <Folder Include="Services\Customer\Commands\" />
+    <Folder Include="Services\Customer\Queries\" />
+  </ItemGroup>
+
 </Project>
