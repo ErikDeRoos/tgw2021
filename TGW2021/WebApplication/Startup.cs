@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using WebApplication.Data;
 using WebApplication.Data.DataModels;
 using WebApplication.Services;
+using WebApplication.Services.UserSession;
 
 namespace WebApplication
 {
@@ -36,8 +37,11 @@ namespace WebApplication
             services.AddTransient<IOrderDataDomain>(s => s.GetRequiredService<ApplicationDbContext>());
             services.AddTransient<IProductDataDomain>(s => s.GetRequiredService<ApplicationDbContext>());
 
+            services.AddAutoMapper(typeof(ServicesAutomapperProfile));
             services.AddProcessors();
+            services.AddScoped<ScopedUserSessionProvider>();
 
+            services.AddHttpContextAccessor();
             services.AddControllersWithViews();
         }
 

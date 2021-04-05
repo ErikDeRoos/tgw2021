@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using WebApplication.Models;
 using WebApplication.Services.Generic;
 using WebApplication.Services.Order.Models;
+using WebApplication.Services.UserSession.Models;
 
 namespace WebApplication.Services.Order.Queries
 {

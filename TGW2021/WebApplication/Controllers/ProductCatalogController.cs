@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication.Controllers
 {
-    public class ProductCatalog : Controller
+    public class ProductCatalogController : Controller
     {
         [Route("{category}")]
         public IActionResult Category(string category)

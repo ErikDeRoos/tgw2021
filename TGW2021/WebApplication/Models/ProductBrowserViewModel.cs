@@ -15,7 +15,7 @@ namespace WebApplication.Models
         public bool Opened { get; set; }
         public string ProductCategoryDisplayName { get; set; }
         public string ProductCategoryId { get; set; }
-        public List<ProductBrowserItemViewModel> Items { get; set; }
+        public List<ProductBrowserItemViewModel> Products { get; set; }
     }
 
     public class ProductBrowserItemViewModel

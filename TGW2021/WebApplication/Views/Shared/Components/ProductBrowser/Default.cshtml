@@ -1,7 +1,23 @@
-﻿@model ShoppingChartOverviewViewModel
+﻿@model ProductBrowserViewModel
 
-<ul class="navbar-nav">
-    <li>
-        <a class="nav-link text-dark" asp-area="" asp-controller="Chart" asp-action="Index">Chart: @Model.ItemsCount</a>
-    </li>
+<div class="sidebar-header">
+    <h3>Product catalog</h3>
+</div>
+
+<ul class="list-unstyled components">
+    <p>Now in store</p>
+    @foreach (var category in Model.ProductTree)
+    {
+        <li class="active">
+            <a href="/productcatalog/@(category.ProductCategoryId)">@category.ProductCategoryDisplayName</a>
+            <ul class="collapse list-unstyled" id="category@(category.ProductCategoryId)">
+                @foreach (var product in category.Products)
+                {
+                    <li>
+                        <a href="/productcatalog/@(category.ProductCategoryId)/@(product.ProductId)">@product.ProductDisplayName</a>
+                    </li>
+                }
+            </ul>
+        </li>
+    }
 </ul>
