@@ -11,7 +11,11 @@ namespace WebApplication.Services.Product.Queries
     {
         public override Task<ProductBrowserViewModel> Handle(CustomerProductCatalogCategoryQuery query, CurrentUserSession currentUserSession)
         {
-            throw new NotImplementedException();
+            // TODO
+            return Task.FromResult(new ProductBrowserViewModel
+            {
+                ProductTree = new System.Collections.Generic.List<ProductBrowserCategoryViewModel>(),
+            });
         }
     }
 }

@@ -27,7 +27,7 @@ namespace WebApplication.Services.Product.Queries
 
         public override async Task<ProductBrowserViewModel> Handle(CustomerProductCatalogStartQuery query, CurrentUserSession currentUserSession)
         {
-            var data = (await _productDataDomain.GetActiveProductsProjection()).ToList();
+            var data = await _productDataDomain.GetActiveProductsProjection();
             // Only return categories (could do this more efficient with a projected query, or a cache, or whatever)
             foreach(var category in data)
             {

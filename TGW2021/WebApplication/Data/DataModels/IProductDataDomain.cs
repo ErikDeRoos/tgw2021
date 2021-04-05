@@ -6,6 +6,10 @@ namespace WebApplication.Data.DataModels
 {
     public interface IProductDataDomain
     {
-        Task<IEnumerable<ProductCategoryProjection>> GetActiveProductsProjection();
+        Task<List<Product.Category>> GetAllCategoriesAndProducts();
+
+        Task<List<ProductCategoryProjection>> GetActiveProductsProjection();
+
+        Task InsertNewActiveProductsProjection(List<ProductCategoryProjection> newData);
     }
 }

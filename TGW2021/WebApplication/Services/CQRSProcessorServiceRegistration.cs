@@ -6,7 +6,7 @@ namespace WebApplication.Services
 {
     public static class CQRSProcessorServiceRegistration
     {
-        public static void AddProcessors(this IServiceCollection services)
+        public static void AddCQRSProcessors(this IServiceCollection services)
         {
             services.RegisterHandlersTransient<ICQRSProcessor>(Assembly.GetExecutingAssembly()); // Get them from different assemblies, if needed
         }

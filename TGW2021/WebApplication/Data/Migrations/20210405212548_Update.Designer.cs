@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApplication.Data;
 
 namespace WebApplication.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210405212548_Update")]
+    partial class Update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -273,23 +275,9 @@ namespace WebApplication.Data.Migrations
                     b.ToTable("CartItem");
                 });
 
-            modelBuilder.Entity("WebApplication.Data.DataModels.Order.ProductComposition", b =>
-                {
-                    b.Property<Guid>("ProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Deactivated")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ProductId");
-
-                    b.ToTable("ProductCompositions");
-                });
-
             modelBuilder.Entity("WebApplication.Data.DataModels.Order.ProductStock", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ProductId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -299,28 +287,17 @@ namespace WebApplication.Data.Migrations
                     b.Property<int>("AvailableOnLocation")
                         .HasColumnType("int");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("EndOfLife")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("PreferredSupplierId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("ProductCompositionProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
+                    b.HasKey("ProductId");
 
                     b.HasIndex("PreferredSupplierId");
 
-                    b.HasIndex("ProductCompositionProductId");
-
-                    b.ToTable("ProductStock");
+                    b.ToTable("ProductStocks");
                 });
 
             modelBuilder.Entity("WebApplication.Data.DataModels.Order.ProductSupplier", b =>
@@ -390,7 +367,7 @@ namespace WebApplication.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CategoryId")
+                    b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
@@ -536,10 +513,6 @@ namespace WebApplication.Data.Migrations
                         .WithMany()
                         .HasForeignKey("PreferredSupplierId");
 
-                    b.HasOne("WebApplication.Data.DataModels.Order.ProductComposition", null)
-                        .WithMany("ComponentsStock")
-                        .HasForeignKey("ProductCompositionProductId");
-
                     b.Navigation("PreferredSupplier");
                 });
 
@@ -564,13 +537,9 @@ namespace WebApplication.Data.Migrations
 
             modelBuilder.Entity("WebApplication.Data.DataModels.Product.Product", b =>
                 {
-                    b.HasOne("WebApplication.Data.DataModels.Product.Category", "Category")
+                    b.HasOne("WebApplication.Data.DataModels.Product.Category", null)
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
+                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("WebApplication.Data.DataModels.Product.ProductProjection", b =>
@@ -583,11 +552,6 @@ namespace WebApplication.Data.Migrations
             modelBuilder.Entity("WebApplication.Data.DataModels.Order.Cart", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("WebApplication.Data.DataModels.Order.ProductComposition", b =>
-                {
-                    b.Navigation("ComponentsStock");
                 });
 
             modelBuilder.Entity("WebApplication.Data.DataModels.Order.ProductStock", b =>

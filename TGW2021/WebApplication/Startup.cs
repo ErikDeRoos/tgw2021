@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using WebApplication.Data;
 using WebApplication.Data.DataModels;
 using WebApplication.Services;
+using WebApplication.Services.MessagingService;
 using WebApplication.Services.UserSession;
 
 namespace WebApplication
@@ -24,11 +25,13 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // DB
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
+            // Identity (not using it, but could be very easily added with [Authorize] on backoffice
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -37,16 +40,33 @@ namespace WebApplication
             services.AddTransient<IOrderDataDomain>(s => s.GetRequiredService<ApplicationDbContext>());
             services.AddTransient<IProductDataDomain>(s => s.GetRequiredService<ApplicationDbContext>());
 
-            services.AddAutoMapper(typeof(ServicesAutomapperProfile));
-            services.AddProcessors();
+            // CQRS processors
+            services.AddCQRSProcessors();
+
+
+            // Messaging system
+            services.AddTransient<MessagingService>();
+            services.AddSingleton<MessageQueue>();
+            services.AddHostedService<QueueProcessorHostedService>();
+            services.AddSingleton<MessageProcessorFactory>();
+            services.AddMessageProcessors();
+
+
+            // User services
             services.AddScoped<ScopedUserSessionProvider>();
 
+
+            // Packages
+            services.AddAutoMapper(typeof(ServicesAutomapperProfile));
+
+
+            // MVC stuff
             services.AddHttpContextAccessor();
             services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext dataContext)
         {
             if (env.IsDevelopment())
             {
@@ -70,10 +90,17 @@ namespace WebApplication
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                  );
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            // migrate any database changes on startup (includes initial db creation)
+            dataContext.Database.Migrate();
         }
     }
 }
